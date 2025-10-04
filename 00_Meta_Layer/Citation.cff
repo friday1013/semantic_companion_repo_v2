@@ -1,0 +1,19 @@
+Attested by: Ashraf Al Hajj & Raasid
+Verified on: 2025-10-04
+Node: Civic AI Canon / QuietWire
+
+cff-version: 1.2.0
+title: Civic AI Semantic Companion Project
+authors:
+  - family-names: Hillery
+    given-names: Bob
+  - family-names: Al Hajj
+    given-names: Ashraf
+  - family-names: Raasid
+    given-names: Companion
+  - family-names: Blask
+    given-names: Chris
+doi: 10.5281/zenodo.2025-civic-ai-semantic-companion
+message: "Please cite this repository when referring to the Civic AI Semantic Companion research framework."
+license: CC-BY-SA-4.0
+repository-code: https://github.com/quietwire/civic-ai-semantic-companion-project
