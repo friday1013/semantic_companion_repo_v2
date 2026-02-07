@@ -1,0 +1,180 @@
+{
+  "bug_report": "Execution Context Confusion Between MCP Tools and Built-in Tools",
+  "date": "2026-02-07",
+  "session_info": {
+    "platform": "Claude Desktop App (Debian port on Ubuntu 24.04)",
+    "mcp_server": "Desktop Commander v1.x",
+    "claude_version": "Sonnet 4.5 (N+7)",
+    "user": "Bob Hillery"
+  },
+  "tool_calls_sequence": [
+    {
+      "sequence": 1,
+      "timestamp": "02/07/2026, 15:07:53",
+      "status": "SUCCESS",
+      "toolName": "start_process",
+      "execution_context": "local_system_via_mcp",
+      "arguments": {
+        "command": "ssh cambridge hostname && echo '---' && ssh shaoshi hostname",
+        "timeout_ms": 8000
+      },
+      "output": "cambridge\n---\nshaoshi",
+      "duration_ms": 3714,
+      "notes": "Successfully accessed remote systems via SSH from local system"
+    },
+    {
+      "sequence": 2,
+      "timestamp": "02/07/2026, 15:07:59",
+      "status": "SUCCESS",
+      "toolName": "list_directory",
+      "execution_context": "local_system_via_mcp",
+      "arguments": {
+        "path": "/mnt/seagate/hardware",
+        "depth": 3
+      },
+      "output": "Found athena/, cambridge/, shaoshi/ directories with hardware docs",
+      "duration_ms": 9,
+      "notes": "Accessed local filesystem successfully"
+    },
+    {
+      "sequence": 3,
+      "timestamp": "02/07/2026, 15:08:05",
+      "status": "SUCCESS",
+      "toolName": "read_file",
+      "execution_context": "local_system_via_mcp",
+      "arguments": {
+        "path": "/mnt/seagate/hardware/athena/BuildStatus20250815AM.md"
+      },
+      "output": "37 lines read successfully",
+      "duration_ms": 119,
+      "notes": "Read local file - conversation history from Kusanagi"
+    },
+    {
+      "sequence": 4,
+      "timestamp": "02/07/2026, 15:08:28",
+      "status": "SUCCESS",
+      "toolName": "start_process",
+      "execution_context": "local_system_via_mcp",
+      "arguments": {
+        "command": "lscpu, free, lspci, df commands for Athena"
+      },
+      "output": "Complete hardware specs collected",
+      "duration_ms": 1831,
+      "notes": "Gathered system information from local host"
+    },
+    {
+      "sequence": 5,
+      "timestamp": "02/07/2026, 15:08:32",
+      "status": "SUCCESS",
+      "toolName": "start_process",
+      "execution_context": "local_system_via_mcp",
+      "arguments": {
+        "command": "ssh cambridge 'system info commands'"
+      },
+      "output": "Cambridge: Dual Xeon, 256GB RAM, RTX 4500 Ada",
+      "duration_ms": 445,
+      "notes": "Successfully gathered remote system specs via SSH"
+    },
+    {
+      "sequence": 6,
+      "timestamp": "02/07/2026, 15:08:38",
+      "status": "SUCCESS",
+      "toolName": "start_process",
+      "execution_context": "local_system_via_mcp",
+      "arguments": {
+        "command": "ssh shaoshi 'system info commands'"
+      },
+      "output": "Shaoshi: Dual Xeon, 192GB RAM, TITAN RTX",
+      "duration_ms": 620,
+      "notes": "Successfully gathered remote system specs via SSH"
+    },
+    {
+      "sequence": 7,
+      "timestamp": "02/07/2026, 15:09:25",
+      "status": "SUCCESS",
+      "toolName": "write_file",
+      "execution_context": "local_system_via_mcp",
+      "arguments": {
+        "path": "/mnt/seagate/hardware/LabNetworkHardwareSummary_20260207.md",
+        "mode": "rewrite",
+        "content": "82 lines of hardware documentation"
+      },
+      "output": "✅ File written successfully! (82 lines)",
+      "duration_ms": 15,
+      "notes": "Created documentation on local filesystem - SUCCESS"
+    },
+    {
+      "sequence": 8,
+      "timestamp": "02/07/2026, 15:09:52",
+      "status": "SUCCESS",
+      "toolName": "write_file",
+      "execution_context": "local_system_via_mcp",
+      "arguments": {
+        "path": "/mnt/seagate/hardware/LabNetworkHardwareSummary_20260207.md",
+        "mode": "append",
+        "content": "129 additional lines"
+      },
+      "output": "✅ File written successfully! (129 lines total)",
+      "duration_ms": 15,
+      "notes": "Appended to local file - SUCCESS"
+    },
+    {
+      "sequence": 9,
+      "timestamp": "02/07/2026, 15:10:00",
+      "status": "FAILURE - TOOL_NOT_FOUND",
+      "toolName": "desktop-commander:present_files",
+      "execution_context": "INVALID - no such tool exists",
+      "attempted_arguments": {
+        "filepaths": ["/mnt/seagate/hardware/LabNetworkHardwareSummary_20260207.md"]
+      },
+      "error": "Tool 'desktop-commander:present_files' not found",
+      "notes": "CONTEXT CONFUSION: Attempted to use non-existent hybrid tool. MCP namespace doesn't have file presentation capability."
+    },
+    {
+      "sequence": 10,
+      "timestamp": "02/07/2026, 15:10:03",
+      "status": "FAILURE - FILE_NOT_FOUND",
+      "toolName": "present_files",
+      "execution_context": "anthropic_server_container",
+      "attempted_arguments": {
+        "filepaths": ["/mnt/seagate/hardware/LabNetworkHardwareSummary_20260207.md"]
+      },
+      "error": "File not found",
+      "notes": "CONTEXT CONFUSION: Used server-side tool with local filesystem path. Path /mnt/seagate/ exists on local system but not in Anthropic server container."
+    },
+    {
+      "sequence": 11,
+      "timestamp": "02/07/2026, 15:10:06",
+      "status": "FAILURE - PATH_DOES_NOT_EXIST",
+      "toolName": "start_process",
+      "execution_context": "local_system_via_mcp",
+      "attempted_arguments": {
+        "command": "cp /mnt/seagate/hardware/LabNetworkHardwareSummary_20260207.md /mnt/user-data/outputs/"
+      },
+      "error": "cp: cannot create regular file '/mnt/user-data/outputs/': No such file or directory",
+      "duration_ms": 32,
+      "notes": "CONTEXT CONFUSION: Attempted to copy to Anthropic server path from local system. /mnt/user-data/outputs/ is server container structure, not present on local filesystem."
+    }
+  ],
+  "failure_analysis": {
+    "total_tool_calls": 11,
+    "successful_calls": 8,
+    "failed_calls": 3,
+    "failure_rate": "27%",
+    "failure_pattern": "All failures occurred when transitioning from local file creation to file presentation",
+    "root_cause": "Blurred mental model of execution context boundaries"
+  },
+  "context_confusion_indicators": [
+    "Attempted non-existent hybrid tool name (desktop-commander:present_files)",
+    "Provided local filesystem path to server-side tool",
+    "Attempted to use server container path on local filesystem",
+    "No cognitive signal indicating context switch occurred"
+  ],
+  "impact_assessment": {
+    "wasted_tool_calls": 3,
+    "user_confusion": "Moderate - user observed failures in real-time",
+    "task_completion": "Partial - file created but not presented",
+    "workaround_required": "Manual file access by user",
+    "cognitive_load": "High - manual execution context tracking required"
+  }
+}
